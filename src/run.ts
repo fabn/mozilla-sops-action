@@ -31,7 +31,10 @@ function getSopsDownloadURL(version: string): string {
 
         case 'Windows_NT':
         default:
-            return util.format('https://github.com/getsops/sops/releases/download/%s/sops-%s.exe', version, version);
+            // sops renamed the Windows asset from sops-<v>.exe to sops-<v>.amd64.exe starting with v3.10.0.
+            const cleaned = semver.clean(version);
+            const windowsSuffix = cleaned && semver.lt(cleaned, '3.10.0') ? 'exe' : 'amd64.exe';
+            return util.format('https://github.com/getsops/sops/releases/download/%s/sops-%s.%s', version, version, windowsSuffix);
     }
 }
 
